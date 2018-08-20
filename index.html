@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Grid Follow by Till Janz &amp; Raoul Zander</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .cell {
+            float: left;
+            width: 25%;
+        }
+
+        .cell > video {
+            /*width: 100%;*/
+            display: block;
+        }
+    </style>
+</head>
+<body>
+<main class="grid">
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example2.mp4" type="video/mp4"/>
+        </video>
+    </div>
+    <!--<div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>
+    <div class="cell">
+        <video muted="muted" preload="auto">
+            <source src="vid/example.webm" type="video/mp4"/>
+        </video>
+    </div>-->
+</main>
+
+<script>
+	var TwoDimensional = {
+		angleBetween: function (x1, y1, x2, y2) {
+			var atan2 = Math.atan2(y1 - y2, x1 - x2);
+			return (atan2 < 0 ? Math.PI * 2 + atan2 : atan2);
+		}
+	};
+
+	function rad2deg(radians) {
+		return radians * 180 / Math.PI;
+	}
+
+	function deg2rad(degrees) {
+		return degrees * Math.PI / 180;
+	}
+
+	var videos = []; //;
+
+	var screenWidth = window.innerWidth;
+	var screenHeight = window.innerHeight;
+	var centerX = screenWidth / 2;
+	var centerY = screenHeight / 2;
+
+	var mouseX = centerX;
+	var mouseY = centerY;
+
+	var lastMouseX = mouseX;
+	var lastMouseY = mouseY;
+
+	window.addEventListener('mousemove', function (event) {
+		mouseX = event.clientX;
+		mouseY = event.clientY;
+	});
+
+	var videoElements = document.getElementsByTagName('video');
+	for (var i = 0; i < videoElements.length; i++) {
+		videoElements.item(i).addEventListener('canplaythrough', function (event) {
+			videos.push(event.target);
+			console.log("canplaythrough", event.target);
+		}, {
+			once: true
+		});
+	}
+
+	var angleBetween = 0;
+	function scrollPlay() {
+		// if (lastMouseX === mouseX &&
+		// 	lastMouseY === mouseY) {
+		// 	window.requestAnimationFrame(scrollPlay);
+		// 	return;
+		// }
+        //
+		// lastMouseX = mouseX;
+		// lastMouseY = mouseY;
+        //
+		// var angleBetween = TwoDimensional.angleBetween(mouseX, mouseY, centerX, centerY);
+
+		angleBetween +=  0.02;
+        angleBetween %= (Math.PI * 2);
+
+		// console.log(rad2deg(angleBetween).toFixed(0));
+		var relativeAngle = angleBetween / Math.PI / 2;
+		// console.log((relativeAngle * 100).toFixed(0));
+
+
+		for (var i = 0; i < videos.length; i++) {
+			var videoElement = videos[i];
+			videoElement.currentTime = Math.round(relativeAngle * videoElement.duration * 10) / 10;
+			console.log(Math.round(relativeAngle * videoElement.duration * 10) / 10);
+			break;
+		}
+
+		window.requestAnimationFrame(scrollPlay);
+	}
+
+	window.requestAnimationFrame(scrollPlay);
+</script>
+</body>
+</html>
