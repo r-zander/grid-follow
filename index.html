@@ -37,9 +37,11 @@
             clear: left;
         }
 
-        .cell > video {
-            max-width: 100%;
-            display: block;
+        .spriteSheet {
+            width: 240px;
+            height: 240px;
+            background-image: url('vid/output.jpg');
+            background-position: center top;
         }
 
         header, footer {
@@ -63,64 +65,40 @@
         </h2>
     </header>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <div class="cell">
-        <video muted="muted" preload="auto">
-            <source src="vid/example.mp4" type="video/mp4"/>
-        </video>
+        <div class="spriteSheet"></div>
     </div>
     <footer>
         <p>All elements adjust their rotation to the relative position of the cursor towards their center.</p>
@@ -132,18 +110,8 @@
         angleBetween: function (x1, y1, x2, y2) {
             var atan2 = Math.atan2(y1 - y2, x1 - x2);
             return (atan2 < 0 ? Math.PI * 2 + atan2 : atan2);
-        },
+        }
     };
-
-    function rad2deg(radians) {
-        return radians * 180 / Math.PI;
-    }
-
-    function deg2rad(degrees) {
-        return degrees * Math.PI / 180;
-    }
-
-    var videos = []; //;
 
     var screenWidth = window.innerWidth;
     var screenHeight = window.innerHeight;
@@ -161,27 +129,10 @@
         mouseY = event.clientY;
     });
 
-    var videoElements = document.getElementsByTagName('video');
-    for (var i = 0; i < videoElements.length; i++) {
-        videoElements.item(i).addEventListener('canplaythrough', function (event) {
-            videos.push(event.target);
-            event.target.dataset.seeked = true;
-            // console.log("canplaythrough", event.target);
-        }, {
-            once: true,
-        });
-
-        // videoElements.item(i).addEventListener('canplay', function (event) {
-        //     console.log("canplay");
-        // });
-
-        videoElements.item(i).addEventListener('seeked', function (event) {
-            // console.log("seeked");
-            event.target.dataset.seeked = true;
-        });
-    }
-
-    var angleBetween = 0;
+    var animationDuration = 15; // seconds
+    var animationFramerate = 10; // fps
+    var numberOfSprites = animationDuration  * animationFramerate;
+    var spriteSheets = document.getElementsByClassName('spriteSheet');
 
     function scrollPlay() {
         if (lastMouseX === mouseX &&
@@ -193,35 +144,18 @@
         lastMouseX = mouseX;
         lastMouseY = mouseY;
 
-        // var angleBetween = TwoDimensional.angleBetween(mouseX, mouseY, centerX, centerY);
-        //
-        // // angleBetween +=  0.02;
-        // // angleBetween %= (Math.PI * 2);
-        //
-        // // console.log(rad2deg(angleBetween).toFixed(0));
-        // var relativeAngle = angleBetween / Math.PI / 2;
-        // // console.log((relativeAngle * 100).toFixed(0));
+        for (var i = 0; i < spriteSheets.length; i++) {
+            var spriteSheet = spriteSheets[i];
 
-
-        for (var i = 0; i < videos.length; i++) {
-            var videoElement = videos[i];
-            // console.log(videoElement.dataset.seeked);
-            if (videoElement.dataset.seeked === 'false') {
-                console.log("Skipped seeking");
-                continue;
-            }
-
-            var elementClientRect = videoElement.getBoundingClientRect();
+            var elementClientRect = spriteSheet.getBoundingClientRect();
             var elementCenterX = (elementClientRect.left + elementClientRect.right) / 2;
             var elementCenterY = (elementClientRect.top + elementClientRect.bottom) / 2;
 
             var angleBetween = TwoDimensional.angleBetween(mouseX, mouseY, elementCenterX, elementCenterY);
             var relativeAngle = angleBetween / Math.PI / 2;
 
-            videoElement.dataset.seeked = false;
-            videoElement.currentTime = Math.round(relativeAngle * videoElement.duration * 10) / 10;
-            // console.log(Math.round(relativeAngle * videoElement.duration * 10) / 10);
-            // break;
+            spriteSheet.style.backgroundPositionY = (Math.round(relativeAngle * numberOfSprites) * -240) + 'px';
+            console.log(Math.round(relativeAngle * numberOfSprites) * -240);
         }
 
         window.requestAnimationFrame(scrollPlay);
