@@ -200,14 +200,10 @@
 
 	window.requestAnimationFrame(scrollPlay);
 
-	function setupSpriteSheetSelect(select) {
-
-	}
-
 	(function setupSpriteSheetSelector() {
 		var spriteSheetSelector = document.getElementById('spriteSheetSelector');
 		var row = spriteSheetSelector.querySelector('tr');
-		row.querySelector('select').addEventListener('change', function (event) {
+		row.querySelector('select').addEventListener('change', function () {
 			var newSpriteSheet = this.value;
 			document.querySelectorAll('.spriteSheet').forEach(function (spriteSheetElement) {
 				spriteSheetElement.style.backgroundImage = 'url("vid/' + newSpriteSheet + '.jpg")';
